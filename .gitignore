@@ -1,0 +1,11 @@
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+.terraform.lock.hcl
+
+*.tfvars
+*.tfvars.json
+*.pem
