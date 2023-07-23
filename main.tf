@@ -2,17 +2,27 @@
 #ami id for us-west-2(amazon-linux2): ami-08541bb85074a743a
 */
 
-#for use of existing key pair for authentication of instance
-resource "aws_key_pair" "integration" {
-  key_name   = "first"
-  public_key = file("H:/ssh-key/terraform")
+#for use of key pair for authentication of instance
+resource "aws_key_pair" "tf-key-pair" {
+key_name = "tf-key-pair"
+public_key = tls_private_key.rsa.public_key_openssh
+}
+#creation of keypair
+resource "tls_private_key" "rsa" {
+algorithm = "RSA"
+rsa_bits  = 4096
+}
+#download key pair to local
+resource "local_file" "tf-key" {
+content  = tls_private_key.rsa.private_key_pem
+filename = "tf-key-pair"
 }
 
 
 resource "aws_instance" "web" {
   ami           = "ami-08541bb85074a743a"
   instance_type = "t3.micro"
-  key_name      = "terraform"
+  key_name = "tf-key-pair"
   tags = {
     Name = "Jenkins_integration"
   }
